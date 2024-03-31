@@ -2,12 +2,87 @@
 //
 
 #include <iostream>
+#include <Windows.h>
+
 using namespace std;
+
+int RoleMenu();
+int ProfessorDashboardMenu();
+
+
+
+
 
 int main()
 {
-	cout << "Hello World!\n";
+	bool Back = false;
+	while (true)
+	{
+		switch (RoleMenu())
+		{
+		case 1:
+			while (!Back)
+			{
+				Back = false;
+				switch (ProfessorDashboardMenu())
+				{
+				case 1:
+					/*Create a new quiz.*/
+					break;
+				case 2:
+					/*Show history of all examination.*/
+					break;
+				case 3:
+					/*Exams in the correction queue*/
+					break;
+				case 4:
+					/*List of students.*/
+					break;
+				case 5:
+					/*Back*/
+					Back = true;
+					break;
+				}
+			}
+			break;
+		case 2:
+			/*It is Student*/
+			break;
+		case 3:
+			exit(1);
+		}
+	}
 }
+
+int RoleMenu()
+{
+	system("cls");
+	int Chosen;
+	cout << " [ 1 ] I'm Professor.\n"
+		<< " [ 2 ] I'm Student.\n"
+		<< " [ 3 ] Exit from Application.\n"
+		<< " Please select an option : ";
+	cin >> Chosen;
+	return Chosen;
+}
+
+int ProfessorDashboardMenu()
+{
+	system("cls");
+	int Chosen;
+	cout << " [ 1 ] Create a new quiz.\n"
+		<< " [ 2 ] Show history of all examination.\n"
+		<< " [ 3 ] Exams in the correction queue\n"
+		<< " [ 4 ] List of students.\n"
+		<< " [ 5 ] Back.\n"
+		<< " Please select an option : ";
+	cin >> Chosen;
+	return Chosen;
+}
+
+
+
+
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
