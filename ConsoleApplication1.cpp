@@ -4,9 +4,14 @@
 #include<iostream>
 #include<Windows.h>
 #include<string>
+#include<vector>
+#include<limits>
+
 using namespace std;
 
 class User;
+class Question;
+class Examination;
 int ProfessorDashboardMenu();
 int FindPerson(User List[], string Name, string Pass);
 
@@ -14,7 +19,6 @@ class User
 {
 public:
 	User(string Name, string Pass, bool IsPro);
-	~User();
 	friend int FindPerson(User List[], string Name, string Pass);
 
 private:
@@ -22,7 +26,6 @@ private:
 	string PassWord;
 	bool IsProfessor;
 };
-
 User::User(string Name, string Pass, bool IsPro)
 {
 	UserName = Name;
@@ -30,9 +33,71 @@ User::User(string Name, string Pass, bool IsPro)
 	IsProfessor = IsPro;
 }
 
-User::~User()
+
+
+class Question
+{
+public:
+	friend class Examination;
+	Question();
+	void SetTest();
+private:
+	string QuestionTxt;
+	bool IsTest;
+	string Option[4];
+	int Answer;
+	int Score;
+};
+Question::Question()
 {
 }
+void Question::SetTest()
+{
+	cout << "Is it a test question [Y/n] ? ";
+	char YorN;
+	cin >> YorN;
+	if (YorN == 'y' || YorN == 'Y')
+		IsTest = true;
+	else
+		IsTest = false;
+}
+
+
+
+class Examination
+{
+public:
+	Examination();
+	void SetQuestion();
+private:
+	Question* Questions;
+	int n;
+};
+Examination::Examination()
+{
+	cout << "How many questions does the exam have? ";
+	cin >> n;
+	Questions = new Question[n];
+}
+void Examination::SetQuestion()
+{
+	int i = 0;
+	for (int i = 0; i < 5; i++)
+	{
+		cout << " Enter text questions : ";
+		getline(cin, Questions[i].QuestionTxt);
+		cout << " Enter score questions : ";
+		cin >> Questions[i].Score;
+		Questions[i].SetTest();
+		if (Questions[i].IsTest)
+		{
+
+		}
+		cout << "Please enter #" << i + 1 << " question :";
+	}
+}
+
+
 
 int main()
 {
@@ -43,14 +108,27 @@ int main()
 					{"Sadra","151617",false},
 					{"Amin","181920",false} };
 
+
 	string Name, Pass;
+	cout << "Enter Your UserName : ";
 	getline(cin, Name);
+	cout << "Enter Your PassWord : ";
 	getline(cin, Pass);
 
 	if (FindPerson(Person, Name, Pass) >= 0)
 	{
 		/*Finded Currectly*/
+		while (true)
+		{
+			switch (ProfessorDashboardMenu())
+			{
+			case 1:
 
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	else
 	{
@@ -67,13 +145,11 @@ int main()
 
 int ProfessorDashboardMenu()
 {
-	system("cls");
 	int Chosen;
-	cout << " [ 1 ] Create a new quiz.\n"
+	cout << " [ 1 ] Create a new examination.\n"
 		<< " [ 2 ] Show history of all examination.\n"
 		<< " [ 3 ] Exams in the correction queue\n"
 		<< " [ 4 ] List of students.\n"
-		<< " [ 5 ] Back.\n"
 		<< " Please select an option : ";
 	cin >> Chosen;
 	return Chosen;
