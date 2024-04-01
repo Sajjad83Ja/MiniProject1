@@ -1,69 +1,66 @@
 // ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <iostream>
-#include <Windows.h>
-
+#include<iostream>
+#include<Windows.h>
+#include<string>
 using namespace std;
 
-int RoleMenu();
+class User;
 int ProfessorDashboardMenu();
+int FindPerson(User List[], string Name, string Pass);
 
+class User
+{
+public:
+	User(string Name, string Pass, bool IsPro);
+	~User();
+	friend int FindPerson(User List[], string Name, string Pass);
+private:
+	string UserName;
+	string PassWord;
+	bool IsProfessor;
+};
 
+User::User(string Name, string Pass, bool IsPro)
+{
+	UserName = Name;
+	PassWord = Pass;
+	IsProfessor = IsPro;
+}
 
-
+User::~User()
+{
+}
 
 int main()
 {
-	bool Back = false;
-	while (true)
+	User Person[] = { {"Lotfi","1234",true},
+					{"Hosseiny","5678",true},
+					{"Sajjad","9101112",false},
+					{"Maryam","121314",false},
+					{"Sadra","151617",false},
+					{"Amin","181920",false} };
+
+	string Name, Pass;
+	getline(cin, Name);
+	getline(cin, Pass);
+
+	if (FindPerson(Person, Name, Pass) >= 0)
 	{
-		switch (RoleMenu())
+		/*Finded Currectly*/
+	}
+	else
+	{
+		if (FindPerson(Person, Name, Pass) == -1)
 		{
-		case 1:
-			while (!Back)
-			{
-				Back = false;
-				switch (ProfessorDashboardMenu())
-				{
-				case 1:
-					/*Create a new quiz.*/
-					break;
-				case 2:
-					/*Show history of all examination.*/
-					break;
-				case 3:
-					/*Exams in the correction queue*/
-					break;
-				case 4:
-					/*List of students.*/
-					break;
-				case 5:
-					/*Back*/
-					Back = true;
-					break;
-				}
-			}
-			break;
-		case 2:
-			/*It is Student*/
-			break;
-		case 3:
-			exit(1);
+			/*Wrong Pass*/
+		}
+		else
+		{
+			/*User Not Exist*/
 		}
 	}
-}
-
-int RoleMenu()
-{
-	system("cls");
-	int Chosen;
-	cout << " [ 1 ] I'm Professor.\n"
-		<< " [ 2 ] I'm Student.\n"
-		<< " [ 3 ] Exit from Application.\n"
-		<< " Please select an option : ";
-	cin >> Chosen;
-	return Chosen;
 }
 
 int ProfessorDashboardMenu()
@@ -80,7 +77,19 @@ int ProfessorDashboardMenu()
 	return Chosen;
 }
 
-
+int FindPerson(User List[], string Name, string Pass)
+{
+	for (int i = 0; i < 6; i++)
+	{
+		if (List[i].UserName == Name)
+		{
+			if (List[i].PassWord == Pass)
+				return i;
+			return -1;
+		}
+	}
+	return -2;
+}
 
 
 
