@@ -16,6 +16,7 @@ public:
 	User(string Name, string Pass, bool IsPro);
 	~User();
 	friend int FindPerson(User List[], string Name, string Pass);
+
 private:
 	string UserName;
 	string PassWord;
@@ -49,16 +50,17 @@ int main()
 	if (FindPerson(Person, Name, Pass) >= 0)
 	{
 		/*Finded Currectly*/
+
 	}
 	else
 	{
 		if (FindPerson(Person, Name, Pass) == -1)
 		{
-			/*Wrong Pass*/
+			cout << "\nWrong PassWord.";
 		}
 		else
 		{
-			/*User Not Exist*/
+			cout << "\nUser Not Found.";
 		}
 	}
 }
