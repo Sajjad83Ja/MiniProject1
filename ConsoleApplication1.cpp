@@ -20,6 +20,7 @@ class User
 public:
 	User(string Name, string Pass, bool IsPro);
 	friend int FindPerson(User List[], string Name, string Pass);
+	bool RetCondition();
 
 private:
 	string UserName;
@@ -32,7 +33,10 @@ User::User(string Name, string Pass, bool IsPro)
 	PassWord = Pass;
 	IsProfessor = IsPro;
 }
-
+bool User::RetCondition()
+{
+	return IsProfessor;
+}
 
 
 class Question
@@ -46,7 +50,8 @@ private:
 	bool IsTest;
 	string Option[4];
 	int Answer;
-	int Score;
+	int QScore;
+	int QTime;
 };
 Question::Question()
 {
@@ -81,19 +86,26 @@ Examination::Examination()
 }
 void Examination::SetQuestion()
 {
-	int i = 0;
 	for (int i = 0; i < 5; i++)
 	{
-		cout << " Enter text questions : ";
+		cout << "Please enter #" << i + 1 << " text question :";
 		getline(cin, Questions[i].QuestionTxt);
-		cout << " Enter score questions : ";
-		cin >> Questions[i].Score;
 		Questions[i].SetTest();
 		if (Questions[i].IsTest)
 		{
-
+			for (int j = 0; j < 4; j++)
+			{
+				cout << "Please enter #" << j + 1 << " option :";
+				getline(cin, Questions[i].Option[j]);
+			}
+			cout << "Which option is correct ? ";
+			cin >> Questions[i].Answer;
+			Questions[i].Answer--;
 		}
-		cout << "Please enter #" << i + 1 << " question :";
+		cout << " Enter score questions : ";
+		cin >> Questions[i].QScore;
+		cout << " Enter response time questions : ";
+		cin >> Questions[i].QTime;
 	}
 }
 
@@ -118,16 +130,23 @@ int main()
 	if (FindPerson(Person, Name, Pass) >= 0)
 	{
 		/*Finded Currectly*/
-		while (true)
+		if (Person[FindPerson(Person, Name, Pass)].RetCondition())
 		{
-			switch (ProfessorDashboardMenu())
+			while (true)
 			{
-			case 1:
+				switch (ProfessorDashboardMenu())
+				{
+				case 1:
 
-				break;
-			default:
-				break;
+					break;
+				default:
+					break;
+				}
 			}
+		}
+		else
+		{
+			/*Enty Person Is a student.*/
 		}
 	}
 	else
