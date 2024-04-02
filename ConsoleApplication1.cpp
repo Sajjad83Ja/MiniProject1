@@ -1,19 +1,92 @@
-// ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include<iostream>
 #include<Windows.h>
 #include<string>
 #include<vector>
-#include<limits>
 
 using namespace std;
 
 class User;
 class Question;
 class Examination;
+
 int ProfessorDashboardMenu();
 int FindPerson(User List[], string Name, string Pass);
+
+
+
+class Question
+{
+public:
+	friend class Examination;
+	void SetTest();
+private:
+	string QuestionTxt;
+	bool IsTest;
+	string Option[4];
+	int Answer;
+	int QScore;
+	int QTime;
+};
+void Question::SetTest()
+{
+	cout << "Is it a test question [Y/n] ? ";
+	char YorN;
+	cin >> YorN;
+	cin.ignore(9223372036854775807, '\n');
+	if (YorN == 'y' || YorN == 'Y')
+		IsTest = true;
+	else
+		IsTest = false;
+}
+
+
+
+
+class Examination
+{
+public:
+	Examination();
+private:
+	vector<Question>QList;
+	int n;
+};
+Examination::Examination()
+{
+	cout << "How many questions does the exam have? ";
+	cin >> n;
+	cin.ignore(9223372036854775807, '\n');
+	Question TempQ;
+	for (int i = 0; i < n; i++)
+	{
+		cout << "Please enter #" << i + 1 << " text question :";
+		getline(cin, TempQ.QuestionTxt);
+		TempQ.SetTest();
+		if (TempQ.IsTest)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				cout << "Please enter #" << j + 1 << " option :";
+				getline(cin, TempQ.Option[j]);
+			}
+			cout << "Which option is correct ? ";
+			cin >> TempQ.Answer;
+			cin.ignore(9223372036854775807, '\n');
+			TempQ.Answer--;
+		}
+		cout << " Enter score questions : ";
+		cin >> TempQ.QScore;
+		cin.ignore(9223372036854775807, '\n');
+		cout << " Enter response time questions : ";
+		cin >> TempQ.QTime;
+		cin.ignore(9223372036854775807, '\n');
+
+		QList.push_back(TempQ);
+	}
+}
+
+
+
+
 
 class User
 {
@@ -21,11 +94,13 @@ public:
 	User(string Name, string Pass, bool IsPro);
 	friend int FindPerson(User List[], string Name, string Pass);
 	bool RetCondition();
-
+	void CreateExam();
 private:
 	string UserName;
 	string PassWord;
 	bool IsProfessor;
+	vector<Examination> ExamList;
+	Examination* TempExam;
 };
 User::User(string Name, string Pass, bool IsPro)
 {
@@ -37,77 +112,14 @@ bool User::RetCondition()
 {
 	return IsProfessor;
 }
-
-
-class Question
+void User::CreateExam()
 {
-public:
-	friend class Examination;
-	Question();
-	void SetTest();
-private:
-	string QuestionTxt;
-	bool IsTest;
-	string Option[4];
-	int Answer;
-	int QScore;
-	int QTime;
-};
-Question::Question()
-{
-}
-void Question::SetTest()
-{
-	cout << "Is it a test question [Y/n] ? ";
-	char YorN;
-	cin >> YorN;
-	if (YorN == 'y' || YorN == 'Y')
-		IsTest = true;
-	else
-		IsTest = false;
+	TempExam = new Examination;
+	ExamList.push_back(*TempExam);
+	delete TempExam;
 }
 
 
-
-class Examination
-{
-public:
-	Examination();
-	void SetQuestion();
-private:
-	Question* Questions;
-	int n;
-};
-Examination::Examination()
-{
-	cout << "How many questions does the exam have? ";
-	cin >> n;
-	Questions = new Question[n];
-}
-void Examination::SetQuestion()
-{
-	for (int i = 0; i < 5; i++)
-	{
-		cout << "Please enter #" << i + 1 << " text question :";
-		getline(cin, Questions[i].QuestionTxt);
-		Questions[i].SetTest();
-		if (Questions[i].IsTest)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				cout << "Please enter #" << j + 1 << " option :";
-				getline(cin, Questions[i].Option[j]);
-			}
-			cout << "Which option is correct ? ";
-			cin >> Questions[i].Answer;
-			Questions[i].Answer--;
-		}
-		cout << " Enter score questions : ";
-		cin >> Questions[i].QScore;
-		cout << " Enter response time questions : ";
-		cin >> Questions[i].QTime;
-	}
-}
 
 
 
@@ -120,12 +132,12 @@ int main()
 					{"Sadra","151617",false},
 					{"Amin","181920",false} };
 
-
 	string Name, Pass;
 	cout << "Enter Your UserName : ";
 	getline(cin, Name);
 	cout << "Enter Your PassWord : ";
 	getline(cin, Pass);
+
 
 	if (FindPerson(Person, Name, Pass) >= 0)
 	{
@@ -137,7 +149,7 @@ int main()
 				switch (ProfessorDashboardMenu())
 				{
 				case 1:
-
+					Person[FindPerson(Person, Name, Pass)].CreateExam();
 					break;
 				default:
 					break;
@@ -171,6 +183,7 @@ int ProfessorDashboardMenu()
 		<< " [ 4 ] List of students.\n"
 		<< " Please select an option : ";
 	cin >> Chosen;
+	cin.ignore(9223372036854775807, '\n');
 	return Chosen;
 }
 
@@ -187,16 +200,3 @@ int FindPerson(User List[], string Name, string Pass)
 	}
 	return -2;
 }
-
-
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
