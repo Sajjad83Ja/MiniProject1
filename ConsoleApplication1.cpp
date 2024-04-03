@@ -46,17 +46,20 @@ class Examination
 {
 public:
 	Examination();
+	inline void Print();
+	inline int RetNumnerOfQ();
 private:
 	vector<Question>QList;
-	int n;
+	int NumnerOfQ;
 };
 Examination::Examination()
 {
 	cout << "How many questions does the exam have? ";
-	cin >> n;
+	cin >> NumnerOfQ;
+	cout << "=====================================\n";
 	cin.ignore(9223372036854775807, '\n');
 	Question TempQ;
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < NumnerOfQ; i++)
 	{
 		cout << "Please enter #" << i + 1 << " text question :";
 		getline(cin, TempQ.QuestionTxt);
@@ -79,9 +82,28 @@ Examination::Examination()
 		cout << " Enter response time questions : ";
 		cin >> TempQ.QTime;
 		cin.ignore(9223372036854775807, '\n');
-
+		cout << "=====================================\n";
 		QList.push_back(TempQ);
 	}
+}
+void Examination::Print()
+{
+	for (int Index = 0; Index < NumnerOfQ; Index++)
+	{
+		cout << "=====================================\n";
+		cout << QList[Index].QuestionTxt << "(" << QList[Index].QScore << ")\n";
+		if (QList[Index].IsTest)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				cout << "Option #" << i + 1 << " : " << QList[Index].Option[i] << endl;
+			}
+		}
+	}
+}
+int Examination::RetNumnerOfQ()
+{
+	return NumnerOfQ;
 }
 
 
@@ -95,12 +117,12 @@ public:
 	friend int FindPerson(User List[], string Name, string Pass);
 	bool RetCondition();
 	void CreateExam();
+	void ShowAllExam();
 private:
 	string UserName;
 	string PassWord;
 	bool IsProfessor;
 	vector<Examination> ExamList;
-	Examination* TempExam;
 };
 User::User(string Name, string Pass, bool IsPro)
 {
@@ -114,10 +136,22 @@ bool User::RetCondition()
 }
 void User::CreateExam()
 {
-	TempExam = new Examination;
-	ExamList.push_back(*TempExam);
-	delete TempExam;
+	Examination TempExam;
+	ExamList.push_back(TempExam);
 }
+void User::ShowAllExam()
+{
+	if (ExamList.size() != 0)
+		for (int i = 0; i < ExamList.size(); i++)
+		{
+			cout << "\n\nExam " << i + 1 << " : \n";
+			cout << " Number of Questions : " << ExamList[i].RetNumnerOfQ() << endl;
+			ExamList[i].Print();
+		}
+	else
+		cout << "No Items Found.\n";
+}
+
 
 
 
@@ -138,18 +172,21 @@ int main()
 	cout << "Enter Your PassWord : ";
 	getline(cin, Pass);
 
-
-	if (FindPerson(Person, Name, Pass) >= 0)
+	int Index = FindPerson(Person, Name, Pass);
+	if (Index >= 0)
 	{
 		/*Finded Currectly*/
-		if (Person[FindPerson(Person, Name, Pass)].RetCondition())
+		if (Person[Index].RetCondition())
 		{
 			while (true)
 			{
 				switch (ProfessorDashboardMenu())
 				{
 				case 1:
-					Person[FindPerson(Person, Name, Pass)].CreateExam();
+					Person[Index].CreateExam();
+					break;
+				case 2:
+					Person[Index].ShowAllExam();
 					break;
 				default:
 					break;
