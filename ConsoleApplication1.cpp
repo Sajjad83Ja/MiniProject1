@@ -154,9 +154,6 @@ void User::ShowAllExam()
 
 
 
-
-
-
 int main()
 {
 	User Person[] = { {"Lotfi","1234",true},
@@ -165,48 +162,66 @@ int main()
 					{"Maryam","121314",false},
 					{"Sadra","151617",false},
 					{"Amin","181920",false} };
-
-	string Name, Pass;
-	cout << "Enter Your UserName : ";
-	getline(cin, Name);
-	cout << "Enter Your PassWord : ";
-	getline(cin, Pass);
-
-	int Index = FindPerson(Person, Name, Pass);
-	if (Index >= 0)
+	bool Back;
+	while (true)
 	{
-		/*Finded Currectly*/
-		if (Person[Index].RetCondition())
+		string Name, Pass;
+		cout << "Enter Your UserName : ";
+		getline(cin, Name);
+		cout << "Enter Your PassWord : ";
+		getline(cin, Pass);
+
+		int Index = FindPerson(Person, Name, Pass);
+		if (Index >= 0)
 		{
-			while (true)
+			/*Finded Correctly*/
+			Back = false;
+			if (Person[Index].RetCondition())
 			{
-				switch (ProfessorDashboardMenu())
+				do
 				{
-				case 1:
-					Person[Index].CreateExam();
-					break;
-				case 2:
-					Person[Index].ShowAllExam();
-					break;
-				default:
-					break;
-				}
+					switch (ProfessorDashboardMenu())
+					{
+					case 1:
+						Person[Index].CreateExam();
+						break;
+					case 2:
+						Person[Index].ShowAllExam();
+						break;
+					case 3:
+
+						break;
+					case 4:
+
+						break;
+					case 5:
+						Back = true;
+						system("cls");
+						break;
+					default:
+						break;
+					}
+				} while (!Back);
+			}
+			else
+			{
+				/*Enty Person Is a student.*/
 			}
 		}
 		else
 		{
-			/*Enty Person Is a student.*/
-		}
-	}
-	else
-	{
-		if (FindPerson(Person, Name, Pass) == -1)
-		{
-			cout << "\nWrong PassWord.";
-		}
-		else
-		{
-			cout << "\nUser Not Found.";
+			if (FindPerson(Person, Name, Pass) == -1)
+			{
+				cout << "Wrong PassWord !\n";
+				Sleep(1500);
+				system("cls");
+			}
+			else
+			{
+				cout << "User Not Found :|\n";
+				Sleep(1500);
+				system("cls");
+			}
 		}
 	}
 }
@@ -218,6 +233,7 @@ int ProfessorDashboardMenu()
 		<< " [ 2 ] Show history of all examination.\n"
 		<< " [ 3 ] Exams in the correction queue\n"
 		<< " [ 4 ] List of students.\n"
+		<< " [ 5 ] Back to LoginMenu.\n"
 		<< " Please select an option : ";
 	cin >> Chosen;
 	cin.ignore(9223372036854775807, '\n');
