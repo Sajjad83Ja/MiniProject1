@@ -13,7 +13,6 @@ class StudentList;
 int ProfessorDashboardMenu();
 int FindPerson(User List[], string Name, string Pass);
 
-
 class Question
 {
 public:
@@ -27,20 +26,6 @@ private:
 	int QScore;
 	int QTime;
 };
-void Question::SetTest()
-{
-	cout << "Is it a test question [Y/n] ? ";
-	char YorN;
-	cin >> YorN;
-	cin.ignore(9223372036854775807, '\n');
-	if (YorN == 'y' || YorN == 'Y')
-		IsTest = true;
-	else
-		IsTest = false;
-}
-
-
-
 
 class Examination
 {
@@ -52,64 +37,14 @@ private:
 	vector<Question>QList;
 	int NumnerOfQ;
 };
-Examination::Examination()
+
+class StudentList
 {
-	cout << "How many questions does the exam have? ";
-	cin >> NumnerOfQ;
-	cout << "=====================================\n";
-	cin.ignore(9223372036854775807, '\n');
-	Question TempQ;
-	for (int i = 0; i < NumnerOfQ; i++)
-	{
-		cout << "Please enter #" << i + 1 << " text question :";
-		getline(cin, TempQ.QuestionTxt);
-		TempQ.SetTest();
-		if (TempQ.IsTest)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				cout << "Please enter #" << j + 1 << " option :";
-				getline(cin, TempQ.Option[j]);
-			}
-			cout << "Which option is correct ? ";
-			cin >> TempQ.Answer;
-			cin.ignore(9223372036854775807, '\n');
-			TempQ.Answer--;
-		}
-		cout << " Enter score questions : ";
-		cin >> TempQ.QScore;
-		cin.ignore(9223372036854775807, '\n');
-		cout << " Enter response time questions : ";
-		cin >> TempQ.QTime;
-		cin.ignore(9223372036854775807, '\n');
-		cout << "=====================================\n";
-		QList.push_back(TempQ);
-	}
-}
-void Examination::Print()
-{
-	for (int Index = 0; Index < NumnerOfQ; Index++)
-	{
-		cout << "=====================================\n";
-		cout << QList[Index].QuestionTxt << "(" << QList[Index].QScore << ")\n";
-		if (QList[Index].IsTest)
-		{
-			for (int i = 0; i < 4; i++)
-			{
-				cout << "Option #" << i + 1 << " : " << QList[Index].Option[i] << endl;
-			}
-		}
-	}
-}
-int Examination::RetNumnerOfQ()
-{
-	return NumnerOfQ;
-}
-
-
-
-
-
+public:
+	StudentList(User Person[]);
+private:
+	vector<User> SList;
+};
 
 class User
 {
@@ -129,89 +64,6 @@ private:
 	vector<Examination> ExamList;
 	vector<StudentList>List;
 };
-User::User(string Name, string Pass, bool IsPro)
-{
-	UserName = Name;
-	PassWord = Pass;
-	IsProfessor = IsPro;
-}
-bool User::RetCondition()
-{
-	return IsProfessor;
-}
-void User::CreateExam()
-{
-	Examination TempExam;
-	ExamList.push_back(TempExam);
-}
-void User::ShowAllExam()
-{
-	if (ExamList.size() != 0)
-		for (int i = 0; i < ExamList.size(); i++)
-		{
-			cout << "\n\nExam " << i + 1 << " : \n";
-			cout << " Number of Questions : " << ExamList[i].RetNumnerOfQ() << endl;
-			ExamList[i].Print();
-		}
-	else
-		cout << "No Items Found.\n";
-}
-void User::CreateList(User Person[])
-{
-	StudentList Temp;
-	Temp.CSList(Person);
-	List.push_back(Temp);
-}
-
-
-
-
-
-
-class StudentList
-{
-public:
-	void CSList(User Person[]);
-private:
-	vector<User> SList;
-};
-void StudentList::CSList(User Person[])
-{
-	bool Existance;
-	char YorN;
-	while (true)
-	{
-		Existance = false;
-		cout << " Enter StudentName to add in this list : \n";
-		string InputName;
-		getline(cin, InputName);
-		for (int i = 0; i < 6; i++)
-		{
-			if (InputName == Person[i].UserName)
-			{
-				SList.push_back(Person[i]);
-				Existance = true;
-				break;
-			}
-		}
-		if (!Existance)
-			cout << " Student not found.\n";
-
-		cout << " Continue Adding [Y/n] ? ";
-		cin >> YorN;
-		cin.ignore(9223372036854775807, '\n');
-		if (!(YorN == 'Y' || YorN == 'y'))
-		{
-			break;
-		}
-	}
-}
-
-
-
-
-
-
 
 
 int main()
@@ -312,4 +164,148 @@ int FindPerson(User List[], string Name, string Pass)
 		}
 	}
 	return -2;
+}
+
+
+
+
+/* StudentList Functions. */
+
+StudentList::StudentList(User Person[])
+{
+	bool Existance;
+	char YorN;
+	while (true)
+	{
+		Existance = false;
+		cout << " Enter StudentName to add in this list : \n";
+		string InputName;
+		getline(cin, InputName);
+		for (int i = 0; i < 6; i++)
+		{
+			if (InputName == Person[i].UserName)
+			{
+				SList.push_back(Person[i]);
+				Existance = true;
+				break;
+			}
+		}
+		if (!Existance)
+			cout << " Student not found.\n";
+
+		cout << " Continue Adding [Y/n] ? ";
+		cin >> YorN;
+		cin.ignore(9223372036854775807, '\n');
+		if (!(YorN == 'Y' || YorN == 'y'))
+		{
+			break;
+		}
+	}
+}
+
+
+/* Question Functions. */
+void Question::SetTest()
+{
+	cout << "Is it a test question [Y/n] ? ";
+	char YorN;
+	cin >> YorN;
+	cin.ignore(9223372036854775807, '\n');
+	if (YorN == 'y' || YorN == 'Y')
+		IsTest = true;
+	else
+		IsTest = false;
+}
+
+
+
+/* Examination Functions. */
+Examination::Examination()
+{
+	cout << "How many questions does the exam have? ";
+	cin >> NumnerOfQ;
+	cout << "=====================================\n";
+	cin.ignore(9223372036854775807, '\n');
+	Question TempQ;
+	for (int i = 0; i < NumnerOfQ; i++)
+	{
+		cout << "Please enter #" << i + 1 << " text question :";
+		getline(cin, TempQ.QuestionTxt);
+		TempQ.SetTest();
+		if (TempQ.IsTest)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				cout << "Please enter #" << j + 1 << " option :";
+				getline(cin, TempQ.Option[j]);
+			}
+			cout << "Which option is correct ? ";
+			cin >> TempQ.Answer;
+			cin.ignore(9223372036854775807, '\n');
+			TempQ.Answer--;
+		}
+		cout << " Enter score questions : ";
+		cin >> TempQ.QScore;
+		cin.ignore(9223372036854775807, '\n');
+		cout << " Enter response time questions : ";
+		cin >> TempQ.QTime;
+		cin.ignore(9223372036854775807, '\n');
+		cout << "=====================================\n";
+		QList.push_back(TempQ);
+	}
+}
+void Examination::Print()
+{
+	for (int Index = 0; Index < NumnerOfQ; Index++)
+	{
+		cout << "=====================================\n";
+		cout << QList[Index].QuestionTxt << "(" << QList[Index].QScore << ")\n";
+		if (QList[Index].IsTest)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				cout << "Option #" << i + 1 << " : " << QList[Index].Option[i] << endl;
+			}
+		}
+	}
+}
+int Examination::RetNumnerOfQ()
+{
+	return NumnerOfQ;
+}
+
+
+
+/* User Functions. */
+User::User(string Name, string Pass, bool IsPro)
+{
+	UserName = Name;
+	PassWord = Pass;
+	IsProfessor = IsPro;
+}
+bool User::RetCondition()
+{
+	return IsProfessor;
+}
+void User::CreateExam()
+{
+	Examination TempExam;
+	ExamList.push_back(TempExam);
+}
+void User::ShowAllExam()
+{
+	if (ExamList.size() != 0)
+		for (int i = 0; i < ExamList.size(); i++)
+		{
+			cout << "\n\nExam " << i + 1 << " : \n";
+			cout << " Number of Questions : " << ExamList[i].RetNumnerOfQ() << endl;
+			ExamList[i].Print();
+		}
+	else
+		cout << "No Items Found.\n";
+}
+void User::CreateList(User Person[])
+{
+	StudentList Temp(Person);
+	List.push_back(Temp);
 }
