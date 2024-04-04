@@ -41,7 +41,9 @@ private:
 class StudentList
 {
 public:
+	friend class User;
 	StudentList(User Person[]);
+	void PrintSList();
 private:
 	vector<User> SList;
 };
@@ -49,7 +51,6 @@ private:
 class User
 {
 public:
-
 	friend class StudentList;
 	User(string Name, string Pass, bool IsPro);
 	friend int FindPerson(User List[], string Name, string Pass);
@@ -57,6 +58,7 @@ public:
 	void CreateExam();
 	void ShowAllExam();
 	void CreateList(User Person[]);
+	void PrintList();
 private:
 	string UserName;
 	string PassWord;
@@ -104,7 +106,18 @@ int main()
 
 						break;
 					case 4:
-						Person[Index].CreateList(Person);
+						int Chosen;
+						cout << " [ 1 ] Create new List of student.\n"
+							<< " [ 2 ] Show current lists.\n"
+							<< "Enter an option : ";
+						cin >> Chosen;
+						cin.ignore(9223372036854775807, '\n');
+						if (Chosen == 1)
+						{
+							Person[Index].CreateList(Person);
+							break;
+						}
+						Person[Index].PrintList();
 						break;
 					case 5:
 						Back = true;
@@ -170,7 +183,6 @@ int FindPerson(User List[], string Name, string Pass)
 
 
 /* StudentList Functions. */
-
 StudentList::StudentList(User Person[])
 {
 	bool Existance;
@@ -197,9 +209,14 @@ StudentList::StudentList(User Person[])
 		cin >> YorN;
 		cin.ignore(9223372036854775807, '\n');
 		if (!(YorN == 'Y' || YorN == 'y'))
-		{
 			break;
-		}
+	}
+}
+void StudentList::PrintSList()
+{
+	for (int i = 0; i < SList.size(); i++)
+	{
+		cout << SList[i].UserName << endl;
 	}
 }
 
@@ -308,4 +325,24 @@ void User::CreateList(User Person[])
 {
 	StudentList Temp(Person);
 	List.push_back(Temp);
+}
+void User::PrintList()
+{
+	int NumberOfList = 0;
+	for (int i = 0; i < List.size(); i++)
+	{
+		List[i].SList.capacity() != 0 ? NumberOfList++ : NumberOfList;
+	}
+	cout << "Number of Lists : " << NumberOfList << endl
+		<< "====================================\n";
+	for (int i = 0; i < NumberOfList;)
+	{
+		if (List[i].SList.capacity() != 0)
+		{
+			cout << " #" << i + 1 << " List :\n";
+			List[i].PrintSList();
+			cout << "-----------------------------------------\n";
+			i++;
+		}
+	}
 }
