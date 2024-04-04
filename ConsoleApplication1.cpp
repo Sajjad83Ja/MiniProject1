@@ -8,10 +8,10 @@ using namespace std;
 class User;
 class Question;
 class Examination;
+class StudentList;
 
 int ProfessorDashboardMenu();
 int FindPerson(User List[], string Name, string Pass);
-
 
 
 class Question
@@ -110,19 +110,70 @@ int Examination::RetNumnerOfQ()
 
 
 
+
+
+class StudentList
+{
+public:
+	void CSList(User Person[]);
+private:
+	vector<User> SList;
+};
+void StudentList::CSList(User Person[])
+{
+	bool Existance;
+	char YorN;
+	while (true)
+	{
+		Existance = false;
+		cout << " Enter StudentName to add in this list : \n";
+		string InputName;
+		getline(cin, InputName);
+		for (int i = 0; i < 6; i++)
+		{
+			if (InputName == Person[i].UserName)
+			{
+				SList.push_back(Person[i]);
+				Existance = true;
+				break;
+			}
+		}
+		if (!Existance)
+			cout << " Student not found.\n";
+
+		cout << " Continue Adding [Y/n] ? ";
+		cin >> YorN;
+		cin.ignore(9223372036854775807, '\n');
+		if (!(YorN == 'Y' || YorN == 'y'))
+		{
+			break;
+		}
+	}
+}
+
+
+
+
+
+
+
 class User
 {
 public:
+
+	friend class StudentList;
 	User(string Name, string Pass, bool IsPro);
 	friend int FindPerson(User List[], string Name, string Pass);
 	bool RetCondition();
 	void CreateExam();
 	void ShowAllExam();
+	void CreateList(User Person[]);
 private:
 	string UserName;
 	string PassWord;
 	bool IsProfessor;
 	vector<Examination> ExamList;
+	vector<StudentList>List;
 };
 User::User(string Name, string Pass, bool IsPro)
 {
@@ -151,6 +202,17 @@ void User::ShowAllExam()
 	else
 		cout << "No Items Found.\n";
 }
+void User::CreateList(User Person[])
+{
+	StudentList Temp;
+	Temp.CSList(Person);
+	List.push_back(Temp);
+}
+
+
+
+
+
 
 
 
@@ -192,7 +254,7 @@ int main()
 
 						break;
 					case 4:
-
+						Person[Index].CreateList(Person);
 						break;
 					case 5:
 						Back = true;
