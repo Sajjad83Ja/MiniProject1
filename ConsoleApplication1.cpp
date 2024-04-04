@@ -111,52 +111,6 @@ int Examination::RetNumnerOfQ()
 
 
 
-
-class StudentList
-{
-public:
-	void CSList(User Person[]);
-private:
-	vector<User> SList;
-};
-void StudentList::CSList(User Person[])
-{
-	bool Existance;
-	char YorN;
-	while (true)
-	{
-		Existance = false;
-		cout << " Enter StudentName to add in this list : \n";
-		string InputName;
-		getline(cin, InputName);
-		for (int i = 0; i < 6; i++)
-		{
-			if (InputName == Person[i].UserName)
-			{
-				SList.push_back(Person[i]);
-				Existance = true;
-				break;
-			}
-		}
-		if (!Existance)
-			cout << " Student not found.\n";
-
-		cout << " Continue Adding [Y/n] ? ";
-		cin >> YorN;
-		cin.ignore(9223372036854775807, '\n');
-		if (!(YorN == 'Y' || YorN == 'y'))
-		{
-			break;
-		}
-	}
-}
-
-
-
-
-
-
-
 class User
 {
 public:
@@ -207,6 +161,50 @@ void User::CreateList(User Person[])
 	StudentList Temp;
 	Temp.CSList(Person);
 	List.push_back(Temp);
+}
+
+
+
+
+
+
+class StudentList
+{
+public:
+	void CSList(User Person[]);
+private:
+	vector<User> SList;
+};
+void StudentList::CSList(User Person[])
+{
+	bool Existance;
+	char YorN;
+	while (true)
+	{
+		Existance = false;
+		cout << " Enter StudentName to add in this list : \n";
+		string InputName;
+		getline(cin, InputName);
+		for (int i = 0; i < 6; i++)
+		{
+			if (InputName == Person[i].UserName)
+			{
+				SList.push_back(Person[i]);
+				Existance = true;
+				break;
+			}
+		}
+		if (!Existance)
+			cout << " Student not found.\n";
+
+		cout << " Continue Adding [Y/n] ? ";
+		cin >> YorN;
+		cin.ignore(9223372036854775807, '\n');
+		if (!(YorN == 'Y' || YorN == 'y'))
+		{
+			break;
+		}
+	}
 }
 
 
