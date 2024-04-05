@@ -24,7 +24,7 @@ private:
 	string Option[4];
 	int Answer;
 	int QScore;
-	int QTime;
+	double QTime;
 };
 
 class Examination
@@ -33,9 +33,13 @@ public:
 	Examination();
 	inline void Print();
 	inline int RetNumnerOfQ();
+	inline int Score();
+	inline double Time();
 private:
 	vector<Question>QList;
 	int NumnerOfQ;
+	int TotalScore;
+	double TotalTime;
 };
 
 class StudentList
@@ -154,7 +158,7 @@ int main()
 int ProfessorDashboardMenu()
 {
 	int Chosen;
-	cout << " [ 1 ] Create a new examination.\n"
+	cout << "\n [ 1 ] Create a new examination.\n"
 		<< " [ 2 ] Show history of all examination.\n"
 		<< " [ 3 ] Exams in the correction queue\n"
 		<< " [ 4 ] List of students.\n"
@@ -244,6 +248,7 @@ Examination::Examination()
 	cout << "=====================================\n";
 	cin.ignore(9223372036854775807, '\n');
 	Question TempQ;
+	TotalScore = TotalTime = 0;
 	for (int i = 0; i < NumnerOfQ; i++)
 	{
 		cout << "Please enter #" << i + 1 << " text question :";
@@ -263,9 +268,10 @@ Examination::Examination()
 		}
 		cout << " Enter score questions : ";
 		cin >> TempQ.QScore;
-		cin.ignore(9223372036854775807, '\n');
+		TotalScore += TempQ.QScore;
 		cout << " Enter response time questions : ";
 		cin >> TempQ.QTime;
+		TotalTime += TempQ.QTime;
 		cin.ignore(9223372036854775807, '\n');
 		cout << "=====================================\n";
 		QList.push_back(TempQ);
@@ -290,8 +296,14 @@ int Examination::RetNumnerOfQ()
 {
 	return NumnerOfQ;
 }
-
-
+int Examination::Score()
+{
+	return TotalScore;
+}
+double Examination::Time()
+{
+	return TotalTime;
+}
 
 /* User Functions. */
 User::User(string Name, string Pass, bool IsPro)
@@ -314,12 +326,15 @@ void User::ShowAllExam()
 	if (ExamList.size() != 0)
 		for (int i = 0; i < ExamList.size(); i++)
 		{
-			cout << "\n\nExam " << i + 1 << " : \n";
-			cout << " Number of Questions : " << ExamList[i].RetNumnerOfQ() << endl;
+			cout << "\nExam " << i + 1 << " : ("
+				<< " Number of Questions: " << ExamList[i].RetNumnerOfQ()
+				<< ",  " << " Total score: " << ExamList[i].Score()
+				<< ",  " << " Total time: " << ExamList[i].Time() << " )\n";
 			ExamList[i].Print();
 		}
 	else
 		cout << "No Items Found.\n";
+	cout << endl;
 }
 void User::CreateList(User Person[])
 {
@@ -333,16 +348,21 @@ void User::PrintList()
 	{
 		List[i].SList.capacity() != 0 ? NumberOfList++ : NumberOfList;
 	}
-	cout << "Number of Lists : " << NumberOfList << endl
-		<< "====================================\n";
-	for (int i = 0; i < NumberOfList;)
+	if (NumberOfList != 0)
 	{
-		if (List[i].SList.capacity() != 0)
+		cout << "Number of Lists : " << NumberOfList << endl
+			<< "====================================\n";
+		for (int i = 0; i < NumberOfList;)
 		{
-			cout << " #" << i + 1 << " List :\n";
-			List[i].PrintSList();
-			cout << "-----------------------------------------\n";
-			i++;
+			if (List[i].SList.capacity() != 0)
+			{
+				cout << " #" << i + 1 << " List :\n";
+				List[i].PrintSList();
+				cout << "-----------------------------------------\n";
+				i++;
+			}
 		}
 	}
+	else
+		cout << "\nNo List founded !\n";
 }
