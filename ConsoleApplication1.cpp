@@ -232,13 +232,8 @@ void Question::SetTest()
 	char YorN;
 	cin >> YorN;
 	cin.ignore(9223372036854775807, '\n');
-	if (YorN == 'y' || YorN == 'Y')
-		IsTest = true;
-	else
-		IsTest = false;
+	(YorN == 'y' || YorN == 'Y') ? IsTest = true : IsTest = false;
 }
-
-
 
 /* Examination Functions. */
 Examination::Examination()
@@ -339,27 +334,27 @@ void User::ShowAllExam()
 void User::CreateList(User Person[])
 {
 	StudentList Temp(Person);
-	List.push_back(Temp);
+	if (Temp.SList.capacity() != 0)
+		List.push_back(Temp);
 }
 void User::PrintList()
 {
-	int NumberOfList = 0;
-	for (int i = 0; i < List.size(); i++)
+	//int NumberOfList = 0;
+	//for (int i = 0; i < List.size(); i++)
+	//{
+	//	List[i].SList.capacity() != 0 ? NumberOfList++ : NumberOfList;
+	//}
+	if (List.size() != 0)
 	{
-		List[i].SList.capacity() != 0 ? NumberOfList++ : NumberOfList;
-	}
-	if (NumberOfList != 0)
-	{
-		cout << "Number of Lists : " << NumberOfList << endl
+		cout << "Number of Lists : " << List.size() << endl
 			<< "====================================\n";
-		for (int i = 0; i < NumberOfList;)
+		for (int i = 0; i < List.size(); i++)
 		{
 			if (List[i].SList.capacity() != 0)
 			{
 				cout << " #" << i + 1 << " List :\n";
 				List[i].PrintSList();
 				cout << "-----------------------------------------\n";
-				i++;
 			}
 		}
 	}
