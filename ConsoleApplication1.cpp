@@ -9,9 +9,11 @@ class User;
 class Question;
 class Examination;
 class StudentList;
+class Professor;
+class Student;
 
 int ProfessorDashboardMenu();
-int FindPerson(User List[], string Name, string Pass);
+int FindPerson(User* List[], string Name, string Pass);
 
 class Question
 {
@@ -45,8 +47,8 @@ private:
 class StudentList
 {
 public:
-	friend class User;
-	StudentList(User Person[]);
+	friend class Professor;
+	StudentList(User* Person[]);
 	void PrintSList();
 private:
 	vector<User> SList;
@@ -56,30 +58,58 @@ class User
 {
 public:
 	friend class StudentList;
-	User(string Name, string Pass, bool IsPro);
-	friend int FindPerson(User List[], string Name, string Pass);
-	bool RetCondition();
-	void CreateExam();
-	void ShowAllExam();
-	void CreateList(User Person[]);
-	void PrintList();
-private:
+	User(string Name, string Pass);
+	friend int FindPerson(User* List[], string Name, string Pass);
+	virtual char RetType() { return '\0'; }
+	virtual void CreateExam() {}
+	virtual void ShowAllExam() {}
+	virtual void CreateList(User* Person[]) {}
+	virtual void PrintList() {}
+
+protected:
 	string UserName;
 	string PassWord;
-	bool IsProfessor;
+
+};
+
+class Student :public User
+{
+public:
+	Student(string Name, string Pass);
+	char RetType();
+
+private:
+
+};
+
+class Professor :public User
+{
+public:
+	friend class StudentList;
+	Professor(string Name, string Pass);
+	char RetType();
+	void CreateExam();
+	void ShowAllExam();
+	void CreateList(User* Person[]);
+	void PrintList();
+
+private:
 	vector<Examination> ExamList;
 	vector<StudentList>List;
+
 };
 
 
 int main()
 {
-	User Person[] = { {"Lotfi","1234",true},
-					{"Hosseiny","5678",true},
-					{"Sajjad","9101112",false},
-					{"Maryam","121314",false},
-					{"Sadra","151617",false},
-					{"Amin","181920",false} };
+	Student Slist[] = { {"Sajjad","9101112"},
+						{"Maryam","121314"},
+						{"Sadra","151617"},
+						{"Amin","181920"} };
+	Professor Plist[] = { {"Lotfi","1234"},
+						{"hosseiny","5678"} };
+	User* Person[6] = { &Slist[0],&Slist[1] ,&Slist[2] ,&Slist[3],&Plist[0],&Plist[1] };
+
 	bool Back;
 	while (true)
 	{
@@ -93,18 +123,19 @@ int main()
 		if (Index >= 0)
 		{
 			/*Finded Correctly*/
+			system("cls");
 			Back = false;
-			if (Person[Index].RetCondition())
+			if (Person[Index]->RetType() == 'P')
 			{
 				do
 				{
 					switch (ProfessorDashboardMenu())
 					{
 					case 1:
-						Person[Index].CreateExam();
+						Person[Index]->CreateExam();
 						break;
 					case 2:
-						Person[Index].ShowAllExam();
+						Person[Index]->ShowAllExam();
 						break;
 					case 3:
 
@@ -117,11 +148,9 @@ int main()
 						cin >> Chosen;
 						cin.ignore(9223372036854775807, '\n');
 						if (Chosen == 1)
-						{
-							Person[Index].CreateList(Person);
-							break;
-						}
-						Person[Index].PrintList();
+							Person[Index]->CreateList(Person);
+						else
+							Person[Index]->PrintList();
 						break;
 					case 5:
 						Back = true;
@@ -134,7 +163,7 @@ int main()
 			}
 			else
 			{
-				/*Enty Person Is a student.*/
+				/*Entrance Person Is a student.*/
 			}
 		}
 		else
@@ -158,7 +187,7 @@ int main()
 int ProfessorDashboardMenu()
 {
 	int Chosen;
-	cout << "\n [ 1 ] Create a new examination.\n"
+	cout << " [ 1 ] Create a new examination.\n"
 		<< " [ 2 ] Show history of all examination.\n"
 		<< " [ 3 ] Exams in the correction queue\n"
 		<< " [ 4 ] List of students.\n"
@@ -169,13 +198,13 @@ int ProfessorDashboardMenu()
 	return Chosen;
 }
 
-int FindPerson(User List[], string Name, string Pass)
+int FindPerson(User* List[], string Name, string Pass)
 {
 	for (int i = 0; i < 6; i++)
 	{
-		if (List[i].UserName == Name)
+		if (List[i]->UserName == Name)
 		{
-			if (List[i].PassWord == Pass)
+			if (List[i]->PassWord == Pass)
 				return i;
 			return -1;
 		}
@@ -183,11 +212,8 @@ int FindPerson(User List[], string Name, string Pass)
 	return -2;
 }
 
-
-
-
 /* StudentList Functions. */
-StudentList::StudentList(User Person[])
+StudentList::StudentList(User* Person[])
 {
 	bool Existance;
 	char YorN;
@@ -199,9 +225,9 @@ StudentList::StudentList(User Person[])
 		getline(cin, InputName);
 		for (int i = 0; i < 6; i++)
 		{
-			if (InputName == Person[i].UserName)
+			if (InputName == Person[i]->UserName)
 			{
-				SList.push_back(Person[i]);
+				SList.push_back(*Person[i]);
 				Existance = true;
 				break;
 			}
@@ -223,7 +249,6 @@ void StudentList::PrintSList()
 		cout << SList[i].UserName << endl;
 	}
 }
-
 
 /* Question Functions. */
 void Question::SetTest()
@@ -282,7 +307,7 @@ void Examination::Print()
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				cout << "Option #" << i + 1 << " : " << QList[Index].Option[i] << endl;
+				cout << " #" << i + 1 << " : " << QList[Index].Option[i] << endl;
 			}
 		}
 	}
@@ -301,22 +326,19 @@ double Examination::Time()
 }
 
 /* User Functions. */
-User::User(string Name, string Pass, bool IsPro)
+User::User(string Name, string Pass)
 {
 	UserName = Name;
 	PassWord = Pass;
-	IsProfessor = IsPro;
 }
-bool User::RetCondition()
-{
-	return IsProfessor;
-}
-void User::CreateExam()
+
+/* Professor Functions. */
+void Professor::CreateExam()
 {
 	Examination TempExam;
 	ExamList.push_back(TempExam);
 }
-void User::ShowAllExam()
+void Professor::ShowAllExam()
 {
 	if (ExamList.size() != 0)
 		for (int i = 0; i < ExamList.size(); i++)
@@ -331,19 +353,14 @@ void User::ShowAllExam()
 		cout << "No Items Found.\n";
 	cout << endl;
 }
-void User::CreateList(User Person[])
+void Professor::CreateList(User* Person[])
 {
 	StudentList Temp(Person);
 	if (Temp.SList.capacity() != 0)
 		List.push_back(Temp);
 }
-void User::PrintList()
+void Professor::PrintList()
 {
-	//int NumberOfList = 0;
-	//for (int i = 0; i < List.size(); i++)
-	//{
-	//	List[i].SList.capacity() != 0 ? NumberOfList++ : NumberOfList;
-	//}
 	if (List.size() != 0)
 	{
 		cout << "Number of Lists : " << List.size() << endl
@@ -360,4 +377,20 @@ void User::PrintList()
 	}
 	else
 		cout << "\nNo List founded !\n";
+}
+Professor::Professor(string Name, string Pass) :User(Name, Pass)
+{
+}
+char Professor::RetType()
+{
+	return 'P';
+}
+
+/* Student Functions. */
+Student::Student(string Name, string Pass) :User(Name, Pass)
+{
+}
+char Student::RetType()
+{
+	return 'S';
 }
