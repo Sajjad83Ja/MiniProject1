@@ -51,7 +51,7 @@ public:
 	StudentList(User* Person[]);
 	void PrintSList();
 private:
-	vector<User> SList;
+	vector<Student*> SList;
 };
 
 class User
@@ -65,7 +65,6 @@ public:
 	virtual void ShowAllExam() {}
 	virtual void CreateList(User* Person[]) {}
 	virtual void PrintList() {}
-
 protected:
 	string UserName;
 	string PassWord;
@@ -77,7 +76,6 @@ class Student :public User
 public:
 	Student(string Name, string Pass);
 	char RetType();
-
 private:
 
 };
@@ -225,14 +223,17 @@ StudentList::StudentList(User* Person[])
 		getline(cin, InputName);
 		for (int i = 0; i < 6; i++)
 		{
-			if (InputName == Person[i]->UserName)
+			if ((InputName == Person[i]->UserName) && (Person[i]->RetType() == 'S'))
 			{
-				SList.push_back(*Person[i]);
+				Student* Ptr = (Student*)Person[i];
+				SList.push_back(Ptr);
 				Existance = true;
 				break;
 			}
 		}
-		if (!Existance)
+		if (Existance)
+			cout << " Student Added.\n";
+		else
 			cout << " Student not found.\n";
 
 		cout << " Continue Adding [Y/n] ? ";
@@ -246,7 +247,7 @@ void StudentList::PrintSList()
 {
 	for (int i = 0; i < SList.size(); i++)
 	{
-		cout << SList[i].UserName << endl;
+		cout << SList[i]->UserName << endl;
 	}
 }
 
