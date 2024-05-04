@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include<stdlib.h>
+#include<cstdlib>
 
 using namespace std;
 
@@ -95,6 +96,7 @@ class Professor :public User
 
 int main()
 {
+	system("color F0");
     Student Slist[] = { {"Sajjad","9101112"},
 						{"Maryam","121314"},
 						{"Sadra","151617"},
@@ -175,7 +177,6 @@ int main()
 			}
 		}
 	}
-    system("color F0");
     return 0;
 }
 
