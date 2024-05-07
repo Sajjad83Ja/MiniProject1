@@ -2,105 +2,102 @@
 #include<Windows.h>
 #include<string>
 #include<vector>
+#include<stdlib.h>
+#include<cstdlib>
 
 using namespace std;
 
-class User;
 class Question;
 class Examination;
 class StudentList;
-class Professor;
+class User;
 class Student;
+class Professor;
 
 int ProfessorDashboardMenu();
 int FindPerson(User* List[], string Name, string Pass);
 
 class Question
 {
-public:
-	friend class Examination;
-	void SetTest();
-private:
-	string QuestionTxt;
-	bool IsTest;
-	string Option[4];
-	int Answer;
-	int QScore;
-	double QTime;
+    private:
+        string QuestionTxt;
+	    bool IsTest;
+	    string Option[4];
+	    int Answer;
+	    int QScore;
+	    double QTime;
+    public:
+        friend class Examination;
+	    void SetTest();
 };
 
 class Examination
 {
-public:
-	Examination();
-	inline void Print();
-	inline int RetNumnerOfQ();
-	inline int Score();
-	inline double Time();
-private:
-	vector<Question>QList;
-	int NumnerOfQ;
-	int TotalScore;
-	double TotalTime;
+    private:
+        vector<Question>QList;
+	    int NumnerOfQ;
+	    int TotalScore;
+	    double TotalTime;
+    public:
+        Examination();
+        inline void Print();
+        inline int RetNumnerOfQ();
+	    inline int Score();
+	    inline double Time();
 };
 
 class StudentList
 {
-public:
-	friend class Professor;
-	StudentList(User* Person[]);
-	void PrintSList();
-private:
-	vector<Student*> SList;
+    private:
+        vector<Student*> SList;
+    public:
+        friend class Professor;
+	    StudentList(User* Person[]);
+	    void PrintSList();  
 };
 
 class User
 {
-public:
-	friend class StudentList;
-	User(string Name, string Pass);
-	friend int FindPerson(User* List[], string Name, string Pass);
-	virtual char RetType() { return '\0'; }
-	virtual void CreateExam() {}
-	virtual void ShowAllExam() {}
-	virtual void CreateList(User* Person[]) {}
-	virtual void PrintList() {}
-protected:
-	string UserName;
-	string PassWord;
-
+    protected:
+        string UserName;
+        string PassWord;
+    public:
+        friend class StudentList;
+	    User(string Name, string Pass);
+	    friend int FindPerson(User* List[], string Name, string Pass);
+	    virtual char RetType() { return '\0'; }
+	    virtual void CreateExam() {}
+	    virtual void ShowAllExam() {}
+	    virtual void CreateList(User* Person[]) {}
+	    virtual void PrintList() {}
 };
 
 class Student :public User
 {
-public:
-	Student(string Name, string Pass);
-	char RetType();
-private:
-
+    public:
+        Student(string Name, string Pass);
+        char RetType();
 };
 
 class Professor :public User
 {
-public:
-	friend class StudentList;
-	Professor(string Name, string Pass);
-	char RetType();
-	void CreateExam();
-	void ShowAllExam();
-	void CreateList(User* Person[]);
-	void PrintList();
-
-private:
-	vector<Examination> ExamList;
-	vector<StudentList>List;
-
+    private:
+        vector<Examination> ExamList;
+	    vector<StudentList>List;
+    public:
+        friend class StudentList;
+	    Professor(string Name, string Pass);
+	    char RetType();
+	    void CreateExam();
+	    void ShowAllExam();
+	    void CreateList(User* Person[]);
+	    void PrintList();
 };
-
 
 int main()
 {
-	Student Slist[] = { {"Sajjad","9101112"},
+	system("color F0");
+    Student Slist[] = { {"Sajjad","9101112"},
 						{"Maryam","121314"},
 						{"Sadra","151617"},
 						{"Amin","181920"} };
@@ -109,7 +106,7 @@ int main()
 	User* Person[6] = { &Slist[0],&Slist[1] ,&Slist[2] ,&Slist[3],&Plist[0],&Plist[1] };
 
 	bool Back;
-	while (true)
+    while (true)
 	{
 		string Name, Pass;
 		cout << "Enter Your UserName : ";
@@ -180,6 +177,7 @@ int main()
 			}
 		}
 	}
+    return 0;
 }
 
 int ProfessorDashboardMenu()
@@ -203,13 +201,14 @@ int FindPerson(User* List[], string Name, string Pass)
 		if (List[i]->UserName == Name)
 		{
 			if (List[i]->PassWord == Pass)
-				return i;
+			{
+                return i;
+            }	
 			return -1;
 		}
 	}
 	return -2;
 }
-
 /* StudentList Functions. */
 StudentList::StudentList(User* Person[])
 {
@@ -243,6 +242,7 @@ StudentList::StudentList(User* Person[])
 			break;
 	}
 }
+
 void StudentList::PrintSList()
 {
 	for (int i = 0; i < SList.size(); i++)
@@ -254,8 +254,8 @@ void StudentList::PrintSList()
 /* Question Functions. */
 void Question::SetTest()
 {
+    char YorN;
 	cout << "Is it a test question [Y/n] ? ";
-	char YorN;
 	cin >> YorN;
 	cin.ignore(9223372036854775807, '\n');
 	(YorN == 'y' || YorN == 'Y') ? IsTest = true : IsTest = false;
@@ -379,18 +379,16 @@ void Professor::PrintList()
 	else
 		cout << "\nNo List founded !\n";
 }
-Professor::Professor(string Name, string Pass) :User(Name, Pass)
-{
-}
+Professor::Professor(string Name, string Pass) :User(Name, Pass) {}
+
 char Professor::RetType()
 {
 	return 'P';
 }
 
 /* Student Functions. */
-Student::Student(string Name, string Pass) :User(Name, Pass)
-{
-}
+Student::Student(string Name, string Pass) :User(Name, Pass) {}
+
 char Student::RetType()
 {
 	return 'S';
