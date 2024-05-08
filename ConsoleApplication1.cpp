@@ -164,17 +164,11 @@ int main()
 		else
 		{
 			if (FindPerson(Person, Name, Pass) == -1)
-			{
 				cout << "Wrong PassWord !\n";
-				Sleep(1500);
-				system("cls");
-			}
 			else
-			{
 				cout << "User Not Found :|\n";
-				Sleep(1500);
-				system("cls");
-			}
+			Sleep(1500);
+			system("cls");
 		}
 	}
 	return 0;
