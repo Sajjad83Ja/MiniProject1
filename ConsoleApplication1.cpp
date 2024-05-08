@@ -1,4 +1,3 @@
-//Test For Clone of project
 #include<iostream>
 #include<Windows.h>
 #include<string>
@@ -20,85 +19,85 @@ int FindPerson(User* List[], string Name, string Pass);
 
 class Question
 {
-    private:
-        string QuestionTxt;
-	    bool IsTest;
-	    string Option[4];
-	    int Answer;
-	    int QScore;
-	    double QTime;
-    public:
-        friend class Examination;
-	    void SetTest();
+private:
+	string QuestionTxt;
+	bool IsTest;
+	string Option[4];
+	int Answer;
+	int QScore;
+	double QTime;
+public:
+	friend class Examination;
+	void SetTest();
 };
 
 class Examination
 {
-    private:
-        vector<Question>QList;
-	    int NumnerOfQ;
-	    int TotalScore;
-	    double TotalTime;
-    public:
-        Examination();
-        inline void Print();
-        inline int RetNumnerOfQ();
-	    inline int Score();
-	    inline double Time();
+private:
+	vector<Question>QList;
+	int NumnerOfQ;
+	int TotalScore;
+	double TotalTime;
+public:
+	Examination();
+	inline void Print();
+	inline int RetNumnerOfQ();
+	inline int Score();
+	inline double Time();
 };
 
 class StudentList
 {
-    private:
-        vector<Student*> SList;
-    public:
-        friend class Professor;
-	    StudentList(User* Person[]);
-	    void PrintSList();  
+private:
+	vector<Student*> SList;
+public:
+	friend class Professor;
+	StudentList(User* Person[]);
+	void PrintSList();
 };
 
 class User
 {
-    protected:
-        string UserName;
-        string PassWord;
-    public:
-        friend class StudentList;
-	    User(string Name, string Pass);
-	    friend int FindPerson(User* List[], string Name, string Pass);
-	    virtual char RetType() { return '\0'; }
-	    virtual void CreateExam() {}
-	    virtual void ShowAllExam() {}
-	    virtual void CreateList(User* Person[]) {}
-	    virtual void PrintList() {}
+protected:
+	string UserName;
+	string PassWord;
+public:
+	friend class StudentList;
+	User(string Name, string Pass);
+	friend int FindPerson(User* List[], string Name, string Pass);
+	virtual char RetType() = 0;
+	virtual void CreateExam();
+	virtual void ShowAllExam();
+	virtual void CreateList(User* Person[]);
+	virtual void PrintList();
 };
 
 class Student :public User
 {
-    public:
-        Student(string Name, string Pass);
-        char RetType();
+public:
+	Student(string Name, string Pass);
+	char RetType();
 };
 
 class Professor :public User
 {
-    private:
-        vector<Examination> ExamList;
-	    vector<StudentList>List;
-    public:
-        friend class StudentList;
-	    Professor(string Name, string Pass);
-	    char RetType();
-	    void CreateExam();
-	    void ShowAllExam();
-	    void CreateList(User* Person[]);
-	    void PrintList();
+private:
+	vector<Examination> ExamList;
+	vector<StudentList>List;
+public:
+	friend class StudentList;
+	Professor(string Name, string Pass);
+	char RetType();
+	void CreateExam();
+	void ShowAllExam();
+	void CreateList(User* Person[]);
+	void PrintList();
 };
 
 int main()
 {
 	system("color F0");
-    Student Slist[] = { {"Sajjad","9101112"},
+	Student Slist[] = { {"Sajjad","9101112"},
 						{"Maryam","121314"},
 						{"Sadra","151617"},
 						{"Amin","181920"} };
@@ -107,7 +106,7 @@ int main()
 	User* Person[6] = { &Slist[0],&Slist[1] ,&Slist[2] ,&Slist[3],&Plist[0],&Plist[1] };
 
 	bool Back;
-    while (true)
+	while (true)
 	{
 		string Name, Pass;
 		cout << "Enter Your UserName : ";
@@ -178,7 +177,7 @@ int main()
 			}
 		}
 	}
-    return 0;
+	return 0;
 }
 
 int ProfessorDashboardMenu()
@@ -203,8 +202,8 @@ int FindPerson(User* List[], string Name, string Pass)
 		{
 			if (List[i]->PassWord == Pass)
 			{
-                return i;
-            }	
+				return i;
+			}
 			return -1;
 		}
 	}
@@ -255,7 +254,7 @@ void StudentList::PrintSList()
 /* Question Functions. */
 void Question::SetTest()
 {
-    char YorN;
+	char YorN;
 	cout << "Is it a test question [Y/n] ? ";
 	cin >> YorN;
 	cin.ignore(9223372036854775807, '\n');
@@ -332,6 +331,18 @@ User::User(string Name, string Pass)
 {
 	UserName = Name;
 	PassWord = Pass;
+}
+void User::CreateExam()
+{
+}
+void User::CreateList(User* Person[])
+{
+}
+void User::ShowAllExam()
+{
+}
+void User::PrintList()
+{
 }
 
 /* Professor Functions. */
